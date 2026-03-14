@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeHands Auto Care - Mobile Auto Repair | Oil Changes, Brakes, Tires | NJ</title>
+    <meta name="description" content="Professional mobile auto repair services in Somerset County NJ. Oil changes, brake replacement, tire rotation, and more. Aydan Ohlson brings the shop to you.">
+    <meta name="keywords" content="mobile auto repair NJ, oil change Somerset County, brake replacement NJ, tire rotation, mobile mechanic New Jersey">
+    <meta name="author" content="SafeHands Auto Care">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --red: #cc0000;
+            --dark-red: #8b0000;
+            --light-red: #ff3333;
+            --black: #111111;
+            --dark-gray: #222222;
+            --mid-gray: #444444;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --accent: #e60000;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--black);
+            background: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        nav {
+            background: var(--black);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--red);
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: 1px;
+        }
+
+        .nav-logo span { color: var(--red); }
+
+        .nav-links { display: flex; gap: 2rem; }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover { color: var(--red); }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 60%, #1a0000 100%);
+            color: var(--white);
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(204,0,0,0.15) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 50%, rgba(139,0,0,0.1) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--red);
+            color: var(--white);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span { color: var(--light-red); }
+
+        .hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+        .btn-primary {
+            background: var(--red);
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: 2px solid var(--red);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-red);
+            border-color: var(--dark-red);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: 2px solid var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--black);
+            transform: translateY(-2px);
+        }
+
+        /* TRUST BAR */
+        .trust-bar {
+            background: var(--red);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* SECTIONS */
+        .section { padding: 5rem 2rem; }
+        .section-dark { background: var(--dark-gray); color: var(--white); }
+        .section-light { background: var(--light-gray); }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--black);
+        }
+
+        .section-dark .section-title { color: var(--white); }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--mid-gray);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .section-dark .section-subtitle { color: #aaa; }
+
+        .title-accent {
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--red);
+            margin: 0.8rem auto 1rem;
+            border-radius: 2px;
+        }
+
+        /* SERVICES */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border-top: 4px solid var(--red);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(204,0,0,0.15);
+        }
+
+        .service-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+        .service-card h3 {
+            color: var(--black);
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .service-card p { color: var(--mid-gray); line-height: 1.6; margin-bottom: 1rem; }
+
+        .service-price {
+            font-weight: 700;
+            color: var(--red);
+            font-size: 1rem;
+        }
+
+        /* WHY US */
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .why-item {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .why-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+        .why-item h3 {
+            color: var(--white);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .why-item p { color: #bbb; font-size: 0.95rem; line-height: 1.5; }
+
+        /* ABOUT */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+
+        .about-text h2 span { color: var(--red); }
+
+        .about-text p {
+            color: var(--mid-gray);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .stat-box {
+            background: var(--black);
+            color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border-bottom: 3px solid var(--red);
+        }
+
+        .stat-number { font-size: 2.5rem; font-weight: 900; color: var(--red); }
+        .stat-label { font-size: 0.85rem; color: #aaa; margin-top: 0.3rem; }
+
+        /* PRICING */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .pricing-card {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .pricing-header {
+            background: var(--black);
+            color: var(--white);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .pricing-header h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+
+        .pricing-price {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--red);
+        }
+
+        .pricing-body { padding: 1.5rem; }
+
+        .pricing-body ul { list-style: none; }
+
+        .pricing-body li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            color: var(--mid-gray);
+            font-size: 0.95rem;
+        }
+
+        .pricing-body li::before { content: "✓ "; color: var(--red); font-weight: 700; }
+
+        /* CONTACT */
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon { font-size: 1.5rem; }
+
+        .contact-item h4 { color: var(--red); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.2rem; }
+        .contact-item p { color: #ccc; font-size: 0.95rem; }
+
+        .contact-form { background: var(--white); padding: 2rem; border-radius: 8px; }
+
+        .contact-form h3 {
+            color: var(--black);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .form-group { margin-bottom: 1.2rem; }
+
+        .form-group label {
+            display: block;
+            color: var(--mid-gray);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--red);
+        }
+
+        .form-group textarea { height: 120px; resize: vertical; }
+
+        .form-submit {
+            background: var(--red);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .form-submit:hover { background: var(--dark-red); }
+
+        /* FOOTER */
+        footer {
+            background: var(--black);
+            color: var(--white);
+            text-align: center;
+            padding: 2rem;
+            border-top: 3px solid var(--red);
+        }
+
+        footer p { margin-bottom: 0.5rem; opacity: 0.8; font-size: 0.9rem; }
+        footer a { color: var(--red); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .nav-links { display: none; }
+            .about-content { grid-template-columns: 1fr; gap: 2rem; }
+            .contact-wrapper { grid-template-columns: 1fr; gap: 2rem; }
+            .trust-bar { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-logo">🔧 SafeHands <span>Auto Care</span></div>
+        <div class="nav-links">
+            <a href="#services">Services</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🚗 Mobile Auto Repair • Somerset County, NJ</div>
+            <h1>The Shop Comes<br><span>To You</span></h1>
+            <p>Professional oil changes, brake service, tire rotation, and more — performed at your home or workplace. No appointment hassles, no waiting rooms.</p>
+            <div class="hero-buttons">
+                <a href="#contact" class="btn-primary">Get a Free Quote</a>
+                <a href="#services" class="btn-secondary">Our Services</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="trust-bar">
+        <div class="trust-item">✅ Licensed & Insured</div>
+        <div class="trust-item">🚗 We Come To You</div>
+        <div class="trust-item">⚡ Same-Day Service Available</div>
+        <div class="trust-item">💰 Fair, Upfront Pricing</div>
+    </div>
+
+    <!-- SERVICES -->
+    <section class="section section-light" id="services">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <span class="title-accent"></span>
+            <p class="section-subtitle">Everything your car needs, brought right to your driveway</p>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🛢️</div>
+                    <h3>Oil Change</h3>
+                    <p>Conventional, synthetic blend, or full synthetic oil changes with filter replacement. We use quality oil and OEM-spec filters.</p>
+                    <div class="service-price">From $49.99</div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🛞</div>
+                    <h3>Tire Rotation</h3>
+                    <p>Extend the life of your tires with regular rotation. We'll check pressure and tread depth while we're at it.</p>
+                    <div class="service-price">From $29.99</div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🔴</div>
+                    <h3>Brake Inspection & Replacement</h3>
+                    <p>Squealing brakes? We inspect and replace brake pads, rotors, and calipers to keep you stopping safely.</p>
+                    <div class="service-price">From $149.99/axle</div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🔋</div>
+                    <h3>Battery Service</h3>
+                    <p>Battery testing, replacement, and terminal cleaning. We carry quality batteries for most makes and models.</p>
+                    <div class="service-price">From $89.99</div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">💡</div>
+                    <h3>Light Bulb Replacement</h3>
+                    <p>Headlights, taillights, brake lights, and turn signals. Stay road-legal and visible.</p>
+                    <div class="service-price">From $19.99</div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🔍</div>
+                    <h3>Multi-Point Inspection</h3>
+                    <p>Comprehensive vehicle health check covering fluids, belts, hoses, brakes, and more. Know what your car needs before it becomes a problem.</p>
+                    <div class="service-price">Free with any service</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY US -->
+    <section class="section section-dark" id="why">
+        <div class="container">
+            <h2 class="section-title">Why SafeHands Auto Care?</h2>
+            <span class="title-accent"></span>
+            <div class="why-grid">
+                <div class="why-item">
+                    <div class="why-icon">🏠</div>
+                    <h3>We Come To You</h3>
+                    <p>No dropping off your car, no waiting rooms, no rides needed. We work at your home or office.</p>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon">⏱️</div>
+                    <h3>Save Your Time</h3>
+                    <p>Most services completed in under an hour. You keep going with your day while we handle your car.</p>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon">💵</div>
+                    <h3>Fair Pricing</h3>
+                    <p>Upfront quotes before we start. No surprise fees, no upselling you services you don't need.</p>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon">🔧</div>
+                    <h3>Quality Work</h3>
+                    <p>Professional-grade tools and quality parts. Every job done right the first time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section section-light" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Service Pricing</h2>
+            <span class="title-accent"></span>
+            <p class="section-subtitle">Transparent pricing — no surprises</p>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>🛢️ Oil Change</h3>
+                        <div class="pricing-price">From $49.99</div>
+                    </div>
+                    <div class="pricing-body">
+                        <ul>
+                            <li>Conventional oil + filter: $49.99</li>
+                            <li>Synthetic blend: $64.99</li>
+                            <li>Full synthetic: $79.99</li>
+                            <li>Filter disposal included</li>
+                            <li>Multi-point inspection included</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>🔴 Brake Service</h3>
+                        <div class="pricing-price">From $149.99</div>
+                    </div>
+                    <div class="pricing-body">
+                        <ul>
+                            <li>Brake pad replacement: $149.99/axle</li>
+                            <li>Rotor replacement: $199.99/axle</li>
+                            <li>Pads + rotors combo: $299.99/axle</li>
+                            <li>Brake inspection: Free</li>
+                            <li>Quality OEM-spec parts</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>🛞 Tire & Battery</h3>
+                        <div class="pricing-price">From $29.99</div>
+                    </div>
+                    <div class="pricing-body">
+                        <ul>
+                            <li>Tire rotation: $29.99</li>
+                            <li>Tire pressure check: Free</li>
+                            <li>Battery test: Free</li>
+                            <li>Battery replacement: From $89.99</li>
+                            <li>Terminal cleaning: Included</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Meet <span>Aydan Ohlson</span></h2>
+                    <p>SafeHands Auto Care is built on one simple idea: your time is valuable. Instead of spending half your day at a shop, let us bring professional auto service directly to your driveway.</p>
+                    <p>With a passion for cars and a commitment to honest, quality work, Aydan provides the kind of service you'd get from a trusted friend who happens to know everything about cars.</p>
+                    <p>Operating under the SafeHands Home & Tech Repair brand, you can trust that the same standards of professionalism and reliability apply to every job.</p>
+                    <a href="#contact" class="btn-primary" style="display:inline-block; margin-top:1rem;">Book a Service →</a>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-box">
+                        <div class="stat-number">🚗</div>
+                        <div class="stat-label">Mobile Service</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">$0</div>
+                        <div class="stat-label">Trip / Travel Fee</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">⚡</div>
+                        <div class="stat-label">Same-Day Available</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">✅</div>
+                        <div class="stat-label">Licensed & Insured</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section section-dark" id="contact">
+        <div class="container">
+            <h2 class="section-title">Get a Free Quote</h2>
+            <span class="title-accent"></span>
+            <p class="section-subtitle">Tell us about your car and we'll get back to you fast</p>
+
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>
+                            <h4>Service Area</h4>
+                            <p>Somerset County, NJ<br>Morris County, NJ<br>Union County, NJ</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">🚗</div>
+                        <div>
+                            <h4>How It Works</h4>
+                            <p>Submit the form with your car details and we'll provide a quote. We come to you — home, office, or anywhere convenient.</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">⏱️</div>
+                        <div>
+                            <h4>Response Time</h4>
+                            <p>We respond to all quotes within 2 hours during business hours.</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">🏠</div>
+                        <div>
+                            <h4>Part of SafeHands</h4>
+                            <p>SafeHands Auto Care is a division of <a href="https://safehandshomeandtech.com" style="color: var(--red);">SafeHands Home & Tech Repair LLC</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3>Request a Quote</h3>
+                    <form name="contact" method="POST" data-netlify="true">
+                        <input type="hidden" name="form-name" value="contact">
+                        <div class="form-group">
+                            <label>Your Name</label>
+                            <input type="text" name="name" required placeholder="John Smith">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone" placeholder="(908) 555-1234">
+                        </div>
+                        <div class="form-group">
+                            <label>Service Needed</label>
+                            <select name="service" required>
+                                <option value="">Select a service...</option>
+                                <option>Oil Change</option>
+                                <option>Tire Rotation</option>
+                                <option>Brake Inspection</option>
+                                <option>Brake Replacement</option>
+                                <option>Battery Service</option>
+                                <option>Light Bulb Replacement</option>
+                                <option>Multi-Point Inspection</option>
+                                <option>Multiple Services</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Vehicle (Year, Make, Model)</label>
+                            <input type="text" name="vehicle" placeholder="e.g. 2019 Honda Accord">
+                        </div>
+                        <div class="form-group">
+                            <label>Additional Details</label>
+                            <textarea name="message" placeholder="Any symptoms, concerns, or questions..."></textarea>
+                        </div>
+                        <button type="submit" class="form-submit">Request Free Quote →</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>🔧 <strong>SafeHands Auto Care</strong> — A Division of SafeHands Home & Tech Repair LLC</p>
+        <p>Serving Somerset County • Morris County • Union County, NJ</p>
+        <p style="margin-top:0.5rem;"><a href="https://safehandshomeandtech.com">SafeHands Home & Tech Repair</a> • <a href="#contact">Get a Quote</a> • <a href="#services">Services</a></p>
+        <p style="margin-top:1rem; font-size:0.8rem; opacity:0.5;">&copy; 2026 SafeHands Home & Tech Repair LLC | All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>
