@@ -805,12 +805,8 @@
             <p style="color:#aaa;font-size:0.9rem;line-height:1.6;">Thanks for reaching out to SafeHands Auto Care. Aydan will review your request and get back to you within 2 hours with a quote. Check your email for a confirmation.</p>
         </div>
 
-        <form id="contactForm" action="https://formsubmit.co/soulturnaround@icloud.com" method="POST">
-            <input type="hidden" name="_subject" value="New Quote Request — SafeHands Auto Care">
-            <input type="hidden" name="_autoresponse" value="Hi there! Thanks for reaching out to SafeHands Auto Care. We received your request and Aydan will get back to you within 2 hours with a quote. — SafeHands Auto Care Team">
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_next" value="https://safehandsautocare.netlify.app?sent=1">
-            <input type="hidden" name="_captcha" value="false">
+        <form id="contactForm" name="contact" method="POST" data-netlify="true">
+            <input type="hidden" name="form-name" value="contact">
             <div class="form-row">
                 <div class="form-group">
                     <label>Your Name</label>
@@ -901,17 +897,21 @@
 
 
 <script>
-// Show success if redirected back after form submit
-if (window.location.search.includes('sent=1')) {
-    document.getElementById('contactForm').style.display = 'none';
-    document.getElementById('formSuccess').style.display = 'block';
-    document.getElementById('contact').scrollIntoView({behavior:'smooth'});
-}
-// Show sending state on submit
-document.getElementById('contactForm').addEventListener('submit', function() {
-    const btn = this.querySelector('button[type="submit"]');
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
     btn.textContent = 'Sending...';
     btn.disabled = true;
+    try {
+        await fetch('/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: new URLSearchParams(new FormData(form)).toString()
+        });
+    } catch(err) { /* best effort */ }
+    form.style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
 });
 </script>
 </body>
