@@ -1,14 +1,13 @@
+functionsDirectory = "/home/clawbotpi/sites/safehandsautocare/netlify/functions"
+functionsDirectoryOrigin = "default"
 redirectsOrigin = "config"
 plugins = []
 headers = []
 
-[functions]
-
-[functions."*"]
-
 [build]
 publish = "/home/clawbotpi/sites/safehandsautocare"
 publishOrigin = "ui"
+functions = "/home/clawbotpi/sites/safehandsautocare/netlify/functions"
 
 [build.environment]
 
@@ -23,6 +22,10 @@ publishOrigin = "ui"
 [build.processing.js]
 
 [build.services]
+
+[functions]
+
+[functions."*"]
 
 [[redirects]]
 from = "/*"
