@@ -794,11 +794,38 @@
     </div>
 
     <div class="card" style="grid-column:span 6;padding:0;overflow:hidden;border-radius:16px;min-height:300px;">
-        <iframe
-            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d96744!2d-74.5026!3d40.6887!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1710000000000!5m2!1sen!2sus"
-            width="100%" height="300" style="border:0;display:block;" allowfullscreen="" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" title="SafeHands Auto Care Service Area — Warren, NJ">
-        </iframe>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <div id="service-map" style="width:100%;height:320px;border-radius:16px;"></div>
+        <script>
+          (function() {
+            // Warren NJ center
+            var center = [40.7679, -74.5021];
+            var map = L.map('service-map', { zoomControl: true, scrollWheelZoom: false }).setView(center, 10);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+              maxZoom: 18
+            }).addTo(map);
+
+            // 10-mile radius circle (1 mile ≈ 1609.34 meters)
+            L.circle(center, {
+              radius: 10 * 1609.34,
+              color: '#cc0000',
+              fillColor: '#cc0000',
+              fillOpacity: 0.08,
+              weight: 2
+            }).addTo(map);
+
+            // Center pin
+            var pin = L.divIcon({
+              html: '<div style="background:#cc0000;color:#fff;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:bold;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.4);">🔧 SafeHands Auto Care</div>',
+              className: '',
+              iconAnchor: [75, 36]
+            });
+            L.marker(center, { icon: pin }).addTo(map);
+          })();
+        </script>
     </div>
 
     <!-- CONTACT -->
