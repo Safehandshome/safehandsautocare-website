@@ -903,12 +903,13 @@ document.getElementById('contactForm').addEventListener('submit', async function
     const btn = form.querySelector('button[type="submit"]');
     btn.textContent = 'Sending...';
     btn.disabled = true;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
     try {
-        await fetch('/', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: new URLSearchParams(new FormData(form)).toString()
-        });
+        // Submit to Netlify Forms
+        await fetch('/', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(formData).toString() });
+        // Send confirmation email via SendGrid
+        await fetch('/.netlify/functions/confirm', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
     } catch(err) { /* best effort */ }
     form.style.display = 'none';
     document.getElementById('formSuccess').style.display = 'block';
