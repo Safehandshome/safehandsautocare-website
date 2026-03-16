@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://autocare.safehandshomeandtechrepair.com/sitemap.xml
