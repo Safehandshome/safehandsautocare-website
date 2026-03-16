@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeHands Auto Care — Receipt Generator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #111; color: #eee; min-height: 100vh; padding: 20px; }
+
+    .container { max-width: 700px; margin: 0 auto; }
+
+    h1 { text-align: center; color: #cc0000; font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { text-align: center; color: #888; font-size: 0.85rem; margin-bottom: 24px; }
+
+    .card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .card h2 { color: #cc0000; font-size: 1rem; margin-bottom: 14px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+
+    .row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .row .field { flex: 1; }
+    .field { margin-bottom: 12px; }
+    label { display: block; font-size: 0.75rem; color: #aaa; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    input, textarea, select { width: 100%; background: #222; border: 1px solid #444; border-radius: 4px; padding: 8px 10px; color: #eee; font-size: 0.9rem; }
+    input:focus, textarea:focus { outline: none; border-color: #cc0000; }
+
+    /* Line items */
+    .line-items { margin-bottom: 12px; }
+    .line-item { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+    .line-item input[type="text"] { flex: 3; }
+    .line-item input[type="number"] { flex: 1; }
+    .line-item button { background: #333; border: none; color: #aaa; padding: 8px 10px; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+    .line-item button:hover { color: #cc0000; }
+    .add-line { background: none; border: 1px dashed #444; color: #888; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 0.85rem; margin-top: 4px; }
+    .add-line:hover { border-color: #cc0000; color: #cc0000; }
+
+    .totals { border-top: 1px solid #333; padding-top: 12px; margin-top: 4px; }
+    .total-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; color: #aaa; }
+    .total-row.grand { font-size: 1.1rem; font-weight: bold; color: #fff; border-top: 1px solid #555; padding-top: 8px; margin-top: 4px; }
+
+    .notes-field textarea { height: 70px; resize: vertical; }
+
+    .btn-row { display: flex; gap: 12px; margin-top: 8px; }
+    .btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; }
+    .btn-print { background: #333; color: #fff; }
+    .btn-print:hover { background: #444; }
+    .btn-email { background: #cc0000; color: #fff; }
+    .btn-email:hover { background: #aa0000; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .status { margin-top: 12px; padding: 10px; border-radius: 6px; text-align: center; font-size: 0.9rem; display: none; }
+    .status.success { background: #1a3a1a; color: #4caf50; border: 1px solid #4caf50; display: block; }
+    .status.error { background: #3a1a1a; color: #f44336; border: 1px solid #f44336; display: block; }
+
+    /* ── PRINT RECEIPT ── */
+    #receipt-preview { display: none; }
+
+    @media print {
+      body { background: #fff; color: #000; padding: 0; }
+      .container { display: none; }
+      #receipt-preview { display: block !important; max-width: 680px; margin: 0 auto; font-family: Arial, sans-serif; }
+      .receipt-header { text-align: center; border-bottom: 3px solid #cc0000; padding-bottom: 16px; margin-bottom: 20px; }
+      .receipt-header h1 { color: #cc0000; font-size: 24px; }
+      .receipt-header p { color: #555; font-size: 13px; }
+      .receipt-meta { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 13px; }
+      .receipt-section { margin-bottom: 16px; }
+      .receipt-section h3 { font-size: 12px; text-transform: uppercase; color: #888; border-bottom: 1px solid #ddd; padding-bottom: 4px; margin-bottom: 8px; }
+      .receipt-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      .receipt-table th { background: #111; color: #fff; padding: 6px 10px; text-align: left; }
+      .receipt-table td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+      .receipt-table .amount { text-align: right; }
+      .receipt-totals { margin-left: auto; width: 240px; margin-top: 12px; font-size: 13px; }
+      .receipt-totals .row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #eee; }
+      .receipt-totals .grand { font-weight: bold; font-size: 15px; border-bottom: 2px solid #000; }
+      .receipt-footer { text-align: center; margin-top: 30px; font-size: 11px; color: #888; border-top: 1px solid #ddd; padding-top: 12px; }
+    }
+
+    @media (max-width: 500px) {
+      .row { flex-direction: column; gap: 0; }
+      .btn-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🔧 SafeHands Auto Care</h1>
+  <p class="subtitle">Receipt Generator — Private Tool</p>
+  <p style="text-align:center;color:#888;font-size:0.8rem;margin-bottom:16px;">📍 Service area: within 10 miles of Warren, NJ</p>
+
+  <!-- Customer Info -->
+  <div class="card">
+    <h2>Customer Information</h2>
+    <div class="row">
+      <div class="field"><label>Customer Name</label><input type="text" id="cust-name" placeholder="John Smith"></div>
+      <div class="field"><label>Phone</label><input type="tel" id="cust-phone" placeholder="(908) 555-0100"></div>
+    </div>
+    <div class="field"><label>Email (for sending receipt)</label><input type="email" id="cust-email" placeholder="customer@email.com"></div>
+  </div>
+
+  <!-- Vehicle Info -->
+  <div class="card">
+    <h2>Vehicle Information</h2>
+    <div class="row">
+      <div class="field"><label>Year</label><input type="text" id="veh-year" placeholder="2021"></div>
+      <div class="field"><label>Make</label><input type="text" id="veh-make" placeholder="Toyota"></div>
+      <div class="field"><label>Model</label><input type="text" id="veh-model" placeholder="Tacoma"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Color</label><input type="text" id="veh-color" placeholder="Silver"></div>
+      <div class="field"><label>License Plate</label><input type="text" id="veh-plate" placeholder="NJ ABC123"></div>
+      <div class="field"><label>Mileage</label><input type="text" id="veh-mileage" placeholder="42,500"></div>
+    </div>
+  </div>
+
+  <!-- Services / Line Items -->
+  <div class="card">
+    <h2>Services & Parts</h2>
+    <div class="line-items" id="line-items">
+      <div class="line-item">
+        <input type="text" placeholder="Description (e.g. Oil Change — Full Synthetic)" class="li-desc">
+        <input type="number" placeholder="Price" class="li-price" step="0.01" min="0">
+        <button onclick="removeLine(this)" title="Remove">✕</button>
+      </div>
+    </div>
+    <button class="add-line" onclick="addLine()">+ Add Line Item</button>
+
+    <div class="totals">
+      <div class="total-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+      <div class="total-row">
+        <span>Tax
+          <select id="tax-rate" onchange="calcTotals()" style="background:#222;border:1px solid #444;color:#eee;padding:2px 4px;border-radius:3px;margin-left:6px;font-size:0.8rem;">
+            <option value="0">No Tax</option>
+            <option value="0.06625" selected>NJ Tax (6.625%)</option>
+          </select>
+        </span>
+        <span id="tax-amt">$0.00</span>
+      </div>
+      <div class="total-row grand"><span>TOTAL</span><span id="grand-total">$0.00</span></div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="card notes-field">
+    <h2>Notes / Warranty Info</h2>
+    <div class="field"><textarea id="notes" placeholder="e.g. 3,000 mile oil change reminder. Parts under 90-day warranty."></textarea></div>
+  </div>
+
+  <!-- Receipt # and Date -->
+  <div class="card">
+    <h2>Receipt Details</h2>
+    <div class="row">
+      <div class="field"><label>Receipt #</label><input type="text" id="receipt-num" placeholder="Auto-generated"></div>
+      <div class="field"><label>Date</label><input type="date" id="receipt-date"></div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="btn-row">
+    <button class="btn btn-print" onclick="printReceipt()">🖨️ Print / Save PDF</button>
+    <button class="btn btn-email" onclick="emailReceipt()" id="email-btn">📧 Email to Customer</button>
+  </div>
+  <div class="status" id="status-msg"></div>
+</div>
+
+<!-- Hidden receipt for printing -->
+<div id="receipt-preview"></div>
+
+<script>
+  // Auto-fill date and receipt number
+  const today = new Date();
+  document.getElementById('receipt-date').value = today.toISOString().split('T')[0];
+  const receiptNum = 'SHA-' + today.getFullYear() + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0') + '-' + Math.floor(Math.random()*900+100);
+  document.getElementById('receipt-num').value = receiptNum;
+
+  function addLine() {
+    const li = document.createElement('div');
+    li.className = 'line-item';
+    li.innerHTML = `<input type="text" placeholder="Description" class="li-desc">
+                    <input type="number" placeholder="Price" class="li-price" step="0.01" min="0" oninput="calcTotals()">
+                    <button onclick="removeLine(this)" title="Remove">✕</button>`;
+    document.getElementById('line-items').appendChild(li);
+  }
+
+  function removeLine(btn) {
+    const items = document.querySelectorAll('.line-item');
+    if (items.length > 1) btn.parentElement.remove();
+    calcTotals();
+  }
+
+  function calcTotals() {
+    const prices = document.querySelectorAll('.li-price');
+    let sub = 0;
+    prices.forEach(p => sub += parseFloat(p.value) || 0);
+    const taxRate = parseFloat(document.getElementById('tax-rate').value);
+    const tax = sub * taxRate;
+    const grand = sub + tax;
+    document.getElementById('subtotal').textContent = '$' + sub.toFixed(2);
+    document.getElementById('tax-amt').textContent = '$' + tax.toFixed(2);
+    document.getElementById('grand-total').textContent = '$' + grand.toFixed(2);
+    return { sub, tax, grand };
+  }
+
+  document.querySelectorAll('.li-price').forEach(el => el.addEventListener('input', calcTotals));
+
+  function getLineItems() {
+    const items = [];
+    document.querySelectorAll('.line-item').forEach(li => {
+      const desc = li.querySelector('.li-desc').value.trim();
+      const price = parseFloat(li.querySelector('.li-price').value) || 0;
+      if (desc || price) items.push({ desc, price });
+    });
+    return items;
+  }
+
+  function buildReceiptHTML(forPrint = false) {
+    const name = document.getElementById('cust-name').value || '—';
+    const phone = document.getElementById('cust-phone').value || '—';
+    const email = document.getElementById('cust-email').value || '—';
+    const year = document.getElementById('veh-year').value || '';
+    const make = document.getElementById('veh-make').value || '';
+    const model = document.getElementById('veh-model').value || '';
+    const color = document.getElementById('veh-color').value || '';
+    const plate = document.getElementById('veh-plate').value || '';
+    const mileage = document.getElementById('veh-mileage').value || '';
+    const notes = document.getElementById('notes').value || '';
+    const rNum = document.getElementById('receipt-num').value;
+    const rDate = document.getElementById('receipt-date').value;
+    const items = getLineItems();
+    const { sub, tax, grand } = calcTotals();
+    const taxRate = parseFloat(document.getElementById('tax-rate').value);
+
+    let rowsHTML = items.map(i => `<tr><td>${i.desc}</td><td class="amount">$${i.price.toFixed(2)}</td></tr>`).join('');
+
+    return `
+    <div class="receipt-header">
+      <h1>SafeHands Auto Care</h1>
+      <p>Mobile Mechanic — Somerset County, NJ</p>
+      <p>📞 Call/Text for service | safehandshomeandtechrepair.com</p>
+    </div>
+    <div class="receipt-meta">
+      <div><strong>Receipt #:</strong> ${rNum}<br><strong>Date:</strong> ${rDate}</div>
+      <div style="text-align:right"><strong>Customer:</strong> ${name}<br><strong>Phone:</strong> ${phone}</div>
+    </div>
+    <div class="receipt-section">
+      <h3>Vehicle</h3>
+      <p>${[year, make, model, color].filter(Boolean).join(' ')}${plate ? ' &nbsp;|&nbsp; Plate: ' + plate : ''}${mileage ? ' &nbsp;|&nbsp; Mileage: ' + mileage : ''}</p>
+    </div>
+    <div class="receipt-section">
+      <h3>Services & Parts</h3>
+      <table class="receipt-table">
+        <thead><tr><th>Description</th><th style="text-align:right">Amount</th></tr></thead>
+        <tbody>${rowsHTML}</tbody>
+      </table>
+      <div class="receipt-totals">
+        <div class="row"><span>Subtotal</span><span>$${sub.toFixed(2)}</span></div>
+        ${taxRate > 0 ? `<div class="row"><span>NJ Tax (6.625%)</span><span>$${tax.toFixed(2)}</span></div>` : ''}
+        <div class="row grand"><span>TOTAL</span><span>$${grand.toFixed(2)}</span></div>
+      </div>
+    </div>
+    ${notes ? `<div class="receipt-section"><h3>Notes</h3><p style="font-size:13px;">${notes}</p></div>` : ''}
+    <div class="receipt-footer">
+      Thank you for choosing SafeHands Auto Care!<br>
+      Aydan Ohlson · Mobile Mechanic · Warren, NJ<br>
+      SafeHands Home & Tech Repair LLC
+    </div>`;
+  }
+
+  function printReceipt() {
+    const preview = document.getElementById('receipt-preview');
+    preview.innerHTML = buildReceiptHTML(true);
+    window.print();
+  }
+
+  async function emailReceipt() {
+    const email = document.getElementById('cust-email').value.trim();
+    if (!email) { showStatus('Please enter customer email address.', false); return; }
+    const btn = document.getElementById('email-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const name = document.getElementById('cust-name').value || 'Customer';
+    const rNum = document.getElementById('receipt-num').value;
+    const items = getLineItems();
+    const { sub, tax, grand } = calcTotals();
+    const taxRate = parseFloat(document.getElementById('tax-rate').value);
+    const year = document.getElementById('veh-year').value;
+    const make = document.getElementById('veh-make').value;
+    const model = document.getElementById('veh-model').value;
+    const notes = document.getElementById('notes').value;
+    const rDate = document.getElementById('receipt-date').value;
+    const plate = document.getElementById('veh-plate').value;
+    const mileage = document.getElementById('veh-mileage').value;
+
+    const payload = {
+      type: 'autocare-receipt',
+      to: email,
+      customerName: name,
+      receiptNum: rNum,
+      date: rDate,
+      vehicle: `${year} ${make} ${model}`,
+      plate, mileage,
+      items,
+      subtotal: sub.toFixed(2),
+      tax: tax.toFixed(2),
+      taxRate,
+      total: grand.toFixed(2),
+      notes
+    };
+
+    try {
+      const res = await fetch('/.netlify/functions/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        showStatus('✅ Receipt emailed to ' + email, true);
+      } else {
+        showStatus('❌ Failed to send. Try again or print instead.', false);
+      }
+    } catch(e) {
+      showStatus('❌ Error: ' + e.message, false);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '📧 Email to Customer';
+  }
+
+  function showStatus(msg, ok) {
+    const el = document.getElementById('status-msg');
+    el.textContent = msg;
+    el.className = 'status ' + (ok ? 'success' : 'error');
+  }
+</script>
+</body>
+</html>
