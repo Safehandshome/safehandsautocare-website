@@ -157,7 +157,7 @@
   <!-- Actions -->
   <div class="btn-row">
     <button class="btn btn-print" onclick="printReceipt()">🖨️ Print / Save PDF</button>
-    <button class="btn btn-email" onclick="emailReceipt()" id="email-btn">📧 Email to Customer</button>
+    <button class="btn btn-email" onclick="emailReceipt()">📧 Email to Customer</button>
   </div>
   <div class="status" id="status-msg"></div>
 </div>
@@ -271,59 +271,56 @@
     window.print();
   }
 
-  async function emailReceipt() {
+  function emailReceipt() {
     const email = document.getElementById('cust-email').value.trim();
     if (!email) { showStatus('Please enter customer email address.', false); return; }
-    const btn = document.getElementById('email-btn');
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
 
     const name = document.getElementById('cust-name').value || 'Customer';
     const rNum = document.getElementById('receipt-num').value;
-    const items = getLineItems();
-    const { sub, tax, grand } = calcTotals();
-    const taxRate = parseFloat(document.getElementById('tax-rate').value);
+    const rDate = document.getElementById('receipt-date').value;
     const year = document.getElementById('veh-year').value;
     const make = document.getElementById('veh-make').value;
     const model = document.getElementById('veh-model').value;
-    const notes = document.getElementById('notes').value;
-    const rDate = document.getElementById('receipt-date').value;
     const plate = document.getElementById('veh-plate').value;
     const mileage = document.getElementById('veh-mileage').value;
+    const notes = document.getElementById('notes').value;
+    const items = getLineItems();
+    const { sub, tax, grand } = calcTotals();
+    const taxRate = parseFloat(document.getElementById('tax-rate').value);
 
-    const payload = {
-      type: 'autocare-receipt',
-      to: email,
-      customerName: name,
-      receiptNum: rNum,
-      date: rDate,
-      vehicle: `${year} ${make} ${model}`,
-      plate, mileage,
-      items,
-      subtotal: sub.toFixed(2),
-      tax: tax.toFixed(2),
-      taxRate,
-      total: grand.toFixed(2),
-      notes
-    };
+    const vehicle = [year, make, model].filter(Boolean).join(' ');
+    const vehicleDetails = [vehicle, plate ? 'Plate: ' + plate : '', mileage ? 'Mileage: ' + mileage : ''].filter(Boolean).join(' | ');
 
-    try {
-      const res = await fetch('/.netlify/functions/confirm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        showStatus('✅ Receipt emailed to ' + email, true);
-      } else {
-        showStatus('❌ Failed to send. Try again or print instead.', false);
-      }
-    } catch(e) {
-      showStatus('❌ Error: ' + e.message, false);
-    }
+    let lineDetails = items.map(i => `  • ${i.desc}  $${parseFloat(i.price).toFixed(2)}`).join('\n');
 
-    btn.disabled = false;
-    btn.textContent = '📧 Email to Customer';
+    const body = `Hi ${name},
+
+Thank you for choosing SafeHands Auto Care! Here is your receipt.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SAFEHANDSAUTO CARE — RECEIPT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Receipt #: ${rNum}
+Date: ${rDate}
+Customer: ${name}
+${vehicleDetails ? 'Vehicle: ' + vehicleDetails : ''}
+
+SERVICES & PARTS:
+${lineDetails}
+
+──────────────────────────────
+Subtotal:  $${sub.toFixed(2)}
+${taxRate > 0 ? 'NJ Tax (6.625%):  $' + tax.toFixed(2) + '\n' : ''}TOTAL:  $${grand.toFixed(2)}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${notes ? '\nNotes: ' + notes + '\n' : ''}
+Thank you for your business!
+Aydan Ohlson — SafeHands Auto Care
+Mobile Mechanic · Warren, NJ
+autocare.safehandshomeandtechrepair.com`;
+
+    const subject = `SafeHands Auto Care Receipt — ${rNum}`;
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    showStatus('✅ Opening your mail app — just hit Send!', true);
   }
 
   function showStatus(msg, ok) {
